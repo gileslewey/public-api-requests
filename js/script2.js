@@ -150,20 +150,38 @@ function moveModalNext() {
 // // ------------------------------------------
 // //  SEARCH BAR
 // // ------------------------------------------
+function generatProfile(data, index){
+    gallery.innerHTML = "";
+    let html = ""
+    data.forEach((user,index) => {
+    html = `
+              <div class="card" data-index=${index}>
+                    <div class="card-img-container">
+                        <img class="card-img" src= ${user.picture.large} alt="profile picture">
+                    </div>
+                    <div class="card-info-container">
+                        <h3 id="name" class="card-name cap">${user.name.first} ${user.name.last}</h3>
+                        <p class="card-text">${user.email}</p>
+                        <p class="card-text cap">${user.location.city}, ${user.location.state}</p>
+                    </div>
+                </div>
+`
+    gallery.insertAdjacentHTML('beforeend', html)
 
-searchContainer.addEventListener("input", (e) => {
-   let searchText = e.target.value;
-   searchText = searchText.toUpperCase();
-   filteredList = employees.filter((user) => {
-     return (
-       user.name.first.toUpperCase().includes(searchText) ||
-       user.name.last.toUpperCase().includes(searchText)
-     );
-   });
-   if (filteredList.length > 0) {
-    generatProfile(filteredList);
-    } else {
-     gallery.innerHTML = `Sorry no results for "${searchText}" please try a different name.`;
-   }
-
- });
+});
+// searchContainer.addEventListener("input", (e) => {
+//    let searchText = e.target.value;
+//    searchText = searchText.toUpperCase();
+//    filteredList = employees.filter((user) => {
+//      return (
+//        user.name.first.toUpperCase().includes(searchText) ||
+//        user.name.last.toUpperCase().includes(searchText)
+//      );
+//    });
+//    if (filteredList.length > 0) {
+//     generatProfile(filteredList);
+//     } else {
+//      gallery.innerHTML = `Sorry no results for "${searchText}" please try a different name.`;
+//    }
+//
+//  });

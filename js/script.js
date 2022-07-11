@@ -1,9 +1,14 @@
-let employees = [];
+//
+//Global FUNCTIONS
+//
+
+let dataList = [];
 const url = 'https://randomuser.me/api/?results=12';
-const searchContainerDiv = document.getElementsByClassName('.search-container')[0];
 const galleryDiv = document.getElementById('gallery');
 const body = document.querySelector('body');
 let modalIndex = 0;
+let searchBox = document.getElementsByClassName('search-container')[0];
+
 
 //
 // Fetch FUNCTIONS
@@ -18,11 +23,9 @@ function fetchData(url){
 
 fetchData(url)
   .then(response => {
-     employees = response.results
-     modalList = response.results
+     dataList = response.results
      loadEmployees(response.results);
   });
-
 
   function checkStatus(response){
     if(response.ok){
@@ -33,7 +36,6 @@ fetchData(url)
   }
 
   function loadEmployees(employee) {
-    console.log(employee);
     html = '';
 
     employee.forEach((employee, index) => {
@@ -58,8 +60,7 @@ fetchData(url)
 //
 
 function generateModal(index) {
-    console.log(modalList[index]);
-  let employee = modalList[index];
+  let employee = dataList[index];
   let modalHTML = '';
   modalHTML =
 
@@ -89,6 +90,7 @@ function generateModal(index) {
 
 document.body.insertAdjacentHTML("beforeend", modalHTML);
 const modalClose = document.getElementById('modal-close-btn');
+
 modalClose.addEventListener('click', (e) => {
 document.getElementsByClassName('modal-container')[0].remove()
 });
@@ -107,7 +109,6 @@ modalNext.addEventListener("click", (e) => {
 });
 }
 
-
 gallery.addEventListener("click", (e) => {
   const selectedCard = e.target.closest(".card");
   const index = selectedCard.getAttribute("data-index");
@@ -120,13 +121,13 @@ function modalBack() {
     modalIndex--;
     generateModal(modalIndex);
   } else {
-    modalIndex = modalList.length -1;
+    modalIndex = dataList.length -1;
     generateModal(modalIndex);
   }
 }
 
 function modalForward() {
-  if (modalIndex < modalList.length - 1) {
+  if (modalIndex < dataList.length - 1) {
     modalIndex++;
     generateModal(modalIndex);
   } else {
@@ -135,4 +136,30 @@ function modalForward() {
   }
 }
 
-console.log(modalList);
+function generateSearchBox() {
+  let searchHTML = '';
+    searchHTML =
+        `<form action="#" method="get">
+            <input type="search" id="search-input" class="search-input" placeholder="Search...">
+            <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+        </form>`
+  searchBox.innerHTML = searchHTML;
+};
+  generateSearchBox();
+
+  searchBox.addEventListener("input", (event) => {
+   let searchText = event.target.value;
+   searchText = searchText.toUpperCase();
+   filteredList = dataList.filter((employee) => {
+     return (
+       employee.name.first.toUpperCase().includes(searchText) ||
+       employee.name.last.toUpperCase().includes(searchText)
+     );
+   });
+   if (filteredList.length > 0) {
+    loadEmployees(filteredList);
+    } else {
+     gallery.innerHTML = `Sorry no results for "${searchText}" please try a different name.`;
+   }
+
+ });
